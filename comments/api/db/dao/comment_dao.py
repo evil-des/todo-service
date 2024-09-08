@@ -17,16 +17,20 @@ from api.services.todo_core.dependency import get_todo_core_crud
 class CommentDAO:
     """Class for accessing comments table."""
 
-    def __init__(self, session: AsyncSession = Depends(get_db_session)):
+    def __init__(
+        self,
+        session: AsyncSession = Depends(get_db_session),
+        todo_core: TodoCoreCRUD = Depends(get_todo_core_crud)
+    ):
         self.session = session
+        self.todo_core = todo_core
 
     async def create_comment(
         self,
         task_id: int,
         content: str,
-        todo_core: TodoCoreCRUD = Depends(get_todo_core_crud)
     ) -> CommentModel | None:
-        task = await todo_core.get("tasks", item_id=task_id)
+        task = await self.todo_core.get("tasks", item_id=task_id)
         if not task:
             return None
 
@@ -70,13 +74,12 @@ class CommentDAO:
         self,
         content: Optional[str] = None,
         posted_date: Optional[datetime] = None,
-        telegram_chat_id: Optional[int] = None,
-        todo_core: TodoCoreCRUD = Depends(get_todo_core_crud)
+        telegram_chat_id: Optional[int] = None
     ) -> List[CommentModel]:
         query = select(CommentModel)
 
         if telegram_chat_id:
-            tasks = await todo_core.get(
+            tasks = await self.todo_core.get(
                 "tasks",
                 params={"telegram_chat_id": telegram_chat_id}
             )

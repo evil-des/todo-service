@@ -12,21 +12,24 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 from datetime import timedelta
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+ENV_PREFIX = 'TODO_CORE_'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-5j4)@2gl2njg^0j2my0f^m$#x!_e$gtpb20u61jtu=a8yf1!g9'
+SECRET_KEY = os.environ.get(ENV_PREFIX + 'SECRET_KEY', 'secret_key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get(ENV_PREFIX + 'DEBUG', True)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
+USE_X_FORWARDED_HOST = True
 
 AUTH_USER_MODEL = 'users.User'
 
@@ -77,17 +80,19 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': os.environ.get(ENV_PREFIX + 'DB_ENGINE', 'django.db.backends.sqlite3'),
+        'NAME': os.environ.get(ENV_PREFIX + 'DB_BASE', BASE_DIR / 'db.sqlite3'),
+        'USER': os.environ.get(ENV_PREFIX + 'DB_USER', ' "user"'),
+        'PASSWORD': os.environ.get(ENV_PREFIX + 'DB_PASS', 'password'),
+        'HOST': os.environ.get(ENV_PREFIX + 'DB_HOST', 'localhost'),
+        'PORT': os.environ.get(ENV_PREFIX + 'DB_PORT', '5432'),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -107,18 +112,16 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'America/Adak'
+TIME_ZONE = os.environ.get(ENV_PREFIX + 'TIME_ZONE', 'UTC')
 
 USE_I18N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
@@ -143,11 +146,10 @@ REST_FRAMEWORK = {
         'rest_framework.throttling.UserRateThrottle'
     ],
     'DEFAULT_THROTTLE_RATES': {
-        'anon': '15/minute',
-        'user': '15/minute'
+        'anon': os.environ.get(ENV_PREFIX + 'THROTTLE_RATE', '15/minute'),
+        'user': os.environ.get(ENV_PREFIX + 'THROTTLE_RATE', '15/minute')
     }
 }
-
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),

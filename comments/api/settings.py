@@ -41,7 +41,7 @@ class Settings(BaseSettings):
     workers_count: int = 1
     # Enable uvicorn reloading
     reload: bool = False
-    core_base_url: str = "http://localhost:8000/api"
+    core_base_url: str = "http://localhost:8000/api/"
 
     @property
     def todo_core(self) -> TODOCore:

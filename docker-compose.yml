@@ -1,9 +1,12 @@
 version: '3.9'
 
 services:
-  todo_core:
-    build: ./todo_core/
-    command: python manage.py runserver 0.0.0.0:8000
+  todo-core:
+    build:
+      context: ./todo_core
+      dockerfile: Dockerfile
+      target: prod
+    command: python src/manage.py runserver 0.0.0.0:8000
     image: todo-service-core
     ports:
       - 8000:8000
@@ -12,11 +15,13 @@ services:
         condition: service_healthy
     env_file:
       - .env
+    networks:
+      - default
 
   comments:
     build:
-      context: ./api/
-      dockerfile: ./Dockerfile
+      context: ./comments
+      dockerfile: Dockerfile
       target: prod
     image: todo-service-comments
     restart: always
@@ -29,33 +34,31 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+    networks:
+      - default
 
-  bot:
-    image: todo-service-bot
-    env_file:
-      - .env
-    build:
-      context: ./bot/
-    depends_on:
-      - api
-    environment:
-      BOT_API_URL: htpp://api:8000/api
-      REDIS_HOST: api-redis
+  # bot:
+  #   image: todo-service-bot
+  #   env_file:
+  #     - .env
+  #   build:
+  #     context: ./bot/
+  #   depends_on:
+  #     - api
+  #   environment:
+  #     BOT_API_URL: htpp://api:8000/api
+  #     REDIS_HOST: api-redis
 
   db:
     image: postgres:13.8-bullseye
     hostname: "db"
     env_file:
       - .env
-    environment:
-      POSTGRES_PASSWORD: "dbPassword"
-      POSTGRES_USER: "dbUser"
-      POSTGRES_DB: "todo-service"
     volumes:
       - todo-service-db-data:/var/lib/postgresql/data
     restart: always
     healthcheck:
-      test: pg_isready -U dbUser
+      test: pg_isready -U dbUser -d todo-service
       interval: 2s
       timeout: 3s
       retries: 40
@@ -72,7 +75,7 @@ services:
       timeout: 3s
       retries: 50
 
-  comments_migrator:
+  comments-migrator:
     image: todo-service-comments
     restart: "no"
     command: alembic upgrade head
@@ -82,10 +85,10 @@ services:
       db:
         condition: service_healthy
 
-  todo_core_migrator:
+  todo-core-migrator:
     image: todo-service-core
     restart: "no"
-    command: python manage.py migrate --noinput
+    command: python src/manage.py migrate --noinput
     env_file:
       - .env
     depends_on:
@@ -93,6 +96,9 @@ services:
         condition: service_healthy
 
 
+networks:
+  default:
+    driver: bridge
 
 volumes:
   todo-service-db-data:

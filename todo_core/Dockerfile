@@ -10,8 +10,8 @@ RUN pip install poetry==1.4.2
 RUN poetry config virtualenvs.create false
 
 # Copying requirements of a project
-COPY pyproject.toml poetry.lock /app/src/
-WORKDIR /app/src
+COPY pyproject.toml poetry.lock /app/
+WORKDIR /app
 
 # Installing requirements
 RUN poetry install --only main
@@ -21,7 +21,7 @@ RUN apt-get purge -y \
   && rm -rf /var/lib/apt/lists/*
 
 # Copying actuall application
-COPY . /app/src/
+COPY src/ src/
 RUN poetry install --only main
 
 FROM prod as dev

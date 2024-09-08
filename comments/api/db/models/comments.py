@@ -13,6 +13,6 @@ class CommentModel(Base):
     __tablename__ = "comments"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    task_id: Mapped[int] = mapped_column(Integer, ForeignKey("tasks.id"))
+    task_id: Mapped[int] = mapped_column(Integer)
     content: Mapped[str] = mapped_column(Text)
     posted_date: Mapped[datetime] = mapped_column(DateTime, default=datetime.now())

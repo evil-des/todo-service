@@ -26,7 +26,7 @@ class JWTBearer(HTTPBearer):
     async def verify_jwt(self, jwt_token: str) -> bool:
         async with AsyncClient() as client:
             response = await client.post(
-                settings.todo_core.base_url + "token/verify",
+                settings.todo_core.base_url + "/token/verify",
                 json={"token": jwt_token}
             )
 

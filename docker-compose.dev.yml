@@ -1,0 +1,30 @@
+version: '3.9'
+
+services:
+  todo-core:
+    build:
+      target: dev
+    volumes:
+      - ./todo_core/src/:/app/src/
+    command: python /app/src/manage.py runserver 0.0.0.0:8000
+    environment:
+      TODO_CORE_DEBUG: "True"
+
+  comments:
+    build:
+      target: dev
+    environment:
+      # Enables autoreload.
+      COMMENTS_RELOAD: "True"
+    volumes:
+      - ./comments/:/app/src/
+  db:
+    ports:
+      - "5432:5432"
+  redis:
+    ports:
+      - "6379:6379"
+
+  # bot:
+  #   volumes:
+  #     - ./bot/:/src

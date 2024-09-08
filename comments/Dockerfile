@@ -21,7 +21,7 @@ RUN apt-get purge -y \
   && rm -rf /var/lib/apt/lists/*
 
 # Copying actuall application
-COPY . /app/src/
+COPY . .
 RUN poetry install --only main
 
 CMD ["/usr/local/bin/python", "-m", "api"]
