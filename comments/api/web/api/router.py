@@ -8,4 +8,4 @@ api_router = APIRouter(dependencies=[Depends(JWTBearer())])
 
 
 api_router.include_router(monitoring.router)
-api_router.include_router(comments.router)
+api_router.include_router(comments.router, prefix="/comments")

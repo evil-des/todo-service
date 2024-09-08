@@ -8,7 +8,7 @@ class TodoCoreCRUD:
 
     async def get(self, resource: str, item_id: int = None, params: dict = None):
         url = f"{self.base_url}/{resource}/"
-        if item_id:
+        if item_id is not None:
             url += f"{item_id}/"
         async with AsyncClient() as client:
             response = await client.get(url, params=params)

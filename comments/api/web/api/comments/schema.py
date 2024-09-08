@@ -10,6 +10,10 @@ class CommentCreate(BaseModel):
     content: str
 
 
+class CommentUpdate(BaseModel):
+    content: str
+
+
 class Comment(CommentCreate):
     id: int
 

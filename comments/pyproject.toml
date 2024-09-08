@@ -23,7 +23,7 @@ psycopg2-binary = "^2.9.9"
 pyjwt = "^2.8.0"
 pydantic-settings = "^2.2.1"
 forex-python = "^1.8"
-fastapi-crudrouter = "^0.8.6"
+fastcrud = "^0.14.0"
 
 
 [tool.poetry.dev-dependencies]
