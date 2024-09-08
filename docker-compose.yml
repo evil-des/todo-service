@@ -1,0 +1,99 @@
+version: '3.9'
+
+services:
+  todo_core:
+    build: ./todo_core/
+    command: python manage.py runserver 0.0.0.0:8000
+    image: todo-service-core
+    ports:
+      - 8000:8000
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - .env
+
+  comments:
+    build:
+      context: ./api/
+      dockerfile: ./Dockerfile
+      target: prod
+    image: todo-service-comments
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "8001:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  bot:
+    image: todo-service-bot
+    env_file:
+      - .env
+    build:
+      context: ./bot/
+    depends_on:
+      - api
+    environment:
+      BOT_API_URL: htpp://api:8000/api
+      REDIS_HOST: api-redis
+
+  db:
+    image: postgres:13.8-bullseye
+    hostname: "db"
+    env_file:
+      - .env
+    environment:
+      POSTGRES_PASSWORD: "dbPassword"
+      POSTGRES_USER: "dbUser"
+      POSTGRES_DB: "todo-service"
+    volumes:
+      - todo-service-db-data:/var/lib/postgresql/data
+    restart: always
+    healthcheck:
+      test: pg_isready -U dbUser
+      interval: 2s
+      timeout: 3s
+      retries: 40
+
+  redis:
+    image: bitnami/redis:6.2.5
+    hostname: "redis"
+    restart: always
+    environment:
+      ALLOW_EMPTY_PASSWORD: "yes"
+    healthcheck:
+      test: redis-cli ping
+      interval: 1s
+      timeout: 3s
+      retries: 50
+
+  comments_migrator:
+    image: todo-service-comments
+    restart: "no"
+    command: alembic upgrade head
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+
+  todo_core_migrator:
+    image: todo-service-core
+    restart: "no"
+    command: python manage.py migrate --noinput
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+
+
+
+volumes:
+  todo-service-db-data:
+    name: todo-service-db-data

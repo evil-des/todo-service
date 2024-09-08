@@ -41,12 +41,11 @@ class Settings(BaseSettings):
     workers_count: int = 1
     # Enable uvicorn reloading
     reload: bool = False
+    core_base_url: str = "http://localhost:8000/api"
 
     @property
     def todo_core(self) -> TODOCore:
-        return TODOCore(
-            base_url="http://localhost:8000/api"
-        )
+        return TODOCore(base_url=self.core_base_url)
 
     # Current environment
     environment: str = "dev"
@@ -104,7 +103,7 @@ class Settings(BaseSettings):
 
     class Config:
         env_file = ".env"
-        env_prefix = "API_"
+        env_prefix = "COMMENTS_"
         env_file_encoding = "utf-8"
 
 
