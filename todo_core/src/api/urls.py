@@ -6,7 +6,8 @@ from drf_yasg import openapi
 
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
-    TokenRefreshView
+    TokenRefreshView,
+    TokenVerifyView
 )
 
 from .tasks.views import TaskViewSet
@@ -16,7 +17,7 @@ from .users.views import TelegramUserViewSet
 
 schema_view = get_schema_view(
     openapi.Info(
-        title="Tasks API",
+        title="ToDo Core API",
         default_version='',
         description="Test description",
         terms_of_service="https://www.google.com/policies/terms/",
@@ -39,6 +40,7 @@ urlpatterns = [
 
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh', TokenRefreshView.as_view(), name='token_refresh'),
+    path('token/verify', TokenVerifyView.as_view(), name='token_verify'),
 
     path('', include(router.urls)),
 ]
