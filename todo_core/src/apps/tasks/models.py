@@ -12,7 +12,7 @@ class Task(models.Model):
     remind_time = models.DateTimeField(null=True, blank=True, default=None)
     completed = models.BooleanField(default=False)
     tags = models.ManyToManyField(Tag, related_name="tasks", blank=True)
-    telegram_user = models.OneToOneField(
+    telegram_user = models.ForeignKey(
         TelegramUser,
         related_name="tasks",
         blank=True, null=True,
