@@ -10,7 +10,10 @@ from fastcrud import FastCRUD, crud_router, EndpointCreator
 
 class CommentsEndpoint(EndpointCreator):
     def _create_item(self):
-        async def create_comment(comment: CommentCreate, comment_dao: CommentDAO = Depends()):
+        async def create_comment(
+            comment: CommentCreate,
+            comment_dao: CommentDAO = Depends(),
+        ):
             result = await comment_dao.create_comment(comment.task_id, comment.content)
             return result
 
