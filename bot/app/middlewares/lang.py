@@ -1,7 +1,6 @@
 from typing import Any, Awaitable, Callable, Dict
 from aiogram import BaseMiddleware
 from aiogram.types import Message, Update, CallbackQuery, base
-from app.services.api import API
 from app.services.repo import Repo
 
 

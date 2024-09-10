@@ -2,18 +2,19 @@ from aiogram.fsm.state import State
 from aiogram.types import CallbackQuery
 from aiogram_dialog import DialogManager, StartMode, Window
 from aiogram_dialog.widgets.kbd import Button
-from aiogram_dialog.widgets.text import Const
+from aiogram_dialog.widgets.text import Const, Format
 
 from app.dialogs.common import CommonElements
+from app.services.internal import TODOCore
 from app.services.repo import Repo
-from app.states.admin import UsersListing
+from app.states.user import TODOManage
 
 
-class DeleteReferralWindow(Window):
+class DeleteTaskWindow(Window):
     def __init__(self, state: State) -> None:
         super().__init__(
-            Const("Вы действительно хотите отвязать данного реферала от пользователя?"),
-            self.get_approve_keyboard(self.delete_referral, self.back),
+            Format("{middleware_data[locales][tasks][delete_task][confirm]}"),
+            self.get_approve_keyboard(self.delete_task, self.back),
             state=state,
         )
 
@@ -22,23 +23,26 @@ class DeleteReferralWindow(Window):
         return CommonElements.confirm_n_cancel(on_confirm_click=on_confirm_click, on_cancel_click=on_cancel_click)
 
     @staticmethod
-    async def delete_referral(
+    async def delete_task(
         callback: CallbackQuery,
         widget: Button,
         dialog_manager: DialogManager,
     ) -> None:
-        await callback.answer("⏳ Ожидайте... Отправляем запрос к API")
-        repo: Repo = dialog_manager.middleware_data["repo"]
-        user_id: int = dialog_manager.dialog_data.get("users_obj_id")
+        locales = dialog_manager.middleware_data["locales"]
+        await callback.answer(locales["sending_request"])
 
-        status = await repo.settings_dao.delete_referral(user_id=user_id)
+        # repo: Repo = dialog_manager.middleware_data["repo"]
+        todo_core: TODOCore = dialog_manager.middleware_data["todo_core"]
+        task_id: int = dialog_manager.dialog_data.get("tasks_obj_id")
+
+        status = await todo_core.delete("tasks", task_id)
         if status:
-            await callback.answer("Реферал успешно отвязан 👍")
+            await callback.answer(locales["tasks"]["delete_task"]["success"])
             await dialog_manager.start(
-                state=UsersListing.user_referrals
+                state=TODOManage.tasks
             )
         else:
-            await callback.answer("😵‍💫 Произошла ошибка при удалении реферала")
+            await callback.answer(locales["tasks"]["delete_task"]["fail"])
 
     @staticmethod
     async def back(

@@ -4,10 +4,10 @@ from aiogram_dialog.widgets.kbd import Button, SwitchTo, Group
 from aiogram.types import CallbackQuery, ReplyKeyboardMarkup
 
 from app.services.repo import Repo
-from app.models.user import User
-from app.states.user import ChooseLanguage, UserMainMenu, UserStart
+from app.models.user import TelegramUser
+from app.states.user import ChooseLanguage, UserStart, TODOManage
 from app.data.locales import locales
-from app.handlers.user.start import show_user_menu, show_start_message
+from app.handlers.user.start import show_start_message, show_user_menu
 from app.keyboards.menu import Menu
 
 
@@ -17,11 +17,10 @@ async def on_lang_click(
         manager: DialogManager
 ):
     repo: Repo = manager.middleware_data["repo"]
-    user: User = await repo.user_dao.get_user(chat_id=callback.from_user.id)
+    # user: TelegramUser = await repo.user_dao.get_user(chat_id=callback.from_user.id)
 
     await change_language(manager, button, callback)
-    # await show_start_message(callback.message, manager, user, delete_message=True)
-    await manager.start(UserStart.show, show_mode=ShowMode.EDIT, data={"is_verified": user.is_verified})
+    await manager.start(UserStart.show, show_mode=ShowMode.EDIT)
 
 
 async def on_lang_command(
@@ -30,18 +29,17 @@ async def on_lang_command(
         manager: DialogManager
 ):
     repo: Repo = manager.middleware_data["repo"]
-    user: User = await repo.user_dao.get_user(chat_id=callback.from_user.id)
+    # user: TelegramUser = await repo.user_dao.get_user(chat_id=callback.from_user.id)
 
     await change_language(manager, button, callback)
     await manager.switch_to(ChooseLanguage.language_changed)
 
-    if user.is_verified:
-        await show_user_menu(callback.message, manager)
+    await show_user_menu(message=callback.message, dialog_manager=manager)
 
 
 async def change_language(manager, button, callback):
     repo: Repo = manager.middleware_data["repo"]
-    user: User = await repo.user_dao.get_user(chat_id=callback.from_user.id)
+    user: TelegramUser = await repo.user_dao.get_user(chat_id=callback.from_user.id)
     language: str = " ".join(button.widget_id.split("_")[1:]).replace("  ", "-")
 
     status = await repo.user_dao.set_language(user.id, language)

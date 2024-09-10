@@ -7,13 +7,13 @@ from .user import TelegramUser
 
 class Tag(BaseModel):
     id: int
-    name: str
+    title: str
 
 
 class Task(BaseModel):
     id: int
-    telegram_user: Optional[TelegramUser] = None
-    tags: Optional[List[Tag]] = []
+    telegram_user: Optional[int] = None
+    tags: Optional[List[int]] = []
     title: str
     description: str
     remind_time: datetime

@@ -37,17 +37,15 @@ services:
     networks:
       - default
 
-  # bot:
-  #   image: todo-service-bot
-  #   env_file:
-  #     - .env
-  #   build:
-  #     context: ./bot/
-  #   depends_on:
-  #     - api
-  #   environment:
-  #     BOT_API_URL: htpp://api:8000/api
-  #     REDIS_HOST: api-redis
+  bot:
+    image: todo-service-bot
+    env_file:
+      - .env
+    build:
+      context: ./bot/
+    depends_on:
+      - todo-core
+      - comments
 
   db:
     image: postgres:13.8-bullseye

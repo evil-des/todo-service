@@ -13,14 +13,22 @@ class TelegramUserDAO(DAO):
         if username:
             params["username"] = username
 
-        return await self.todo_core.get(
+        response: dict = await self.todo_core.get(
             "telegram_users",
             item_id=id,
             params=params
         )
 
+        if response and all([not item for item in response.values()]):
+            print("test")
+            print(response)
+            return None
+
+        return TelegramUser(**response)
+
     async def get_users(self) -> Optional[List[TelegramUser]]:
-        return await self.todo_core.get("telegram_users")
+        response = await self.todo_core.get("telegram_users")
+        return [TelegramUser(**item) for item in response if response]
 
     async def create_user(
         self,
@@ -29,11 +37,11 @@ class TelegramUserDAO(DAO):
         last_name: str,
         username: str
     ) -> TelegramUser:
-        user = await self.todo_core.create(
+        response = await self.todo_core.create(
             "telegram_users",
             {"chat_id": chat_id, "first_name": first_name, "last_name": last_name, "username": username}
         )
-        return user
+        return TelegramUser(**response)
 
     async def create_user_if_not_exist(
         self,
@@ -51,9 +59,10 @@ class TelegramUserDAO(DAO):
             )
         return user
 
-    async def set_language(self, user_id: int, language: str) -> bool:
-        return await self.todo_core.update(
+    async def set_language(self, user_id: int, language: str) -> TelegramUser:
+        response = await self.todo_core.patch(
             "telegram_users",
             item_id=user_id,
             data={"language": language}
         )
+        return TelegramUser(**response)

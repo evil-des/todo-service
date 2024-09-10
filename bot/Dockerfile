@@ -43,4 +43,4 @@ RUN poetry install --no-interaction --no-cache --without dev
 #
 #USER app
 
-CMD ["./scripts/start-prod.sh"]
+CMD ["poetry", "run", "python", "app/bot.py"]

@@ -36,11 +36,20 @@ class Base:
         else:
             raise RequestError(message=response.text)
 
-    async def delete(self, resource: str, item_id: int):
+    async def patch(self, resource: str, item_id: int, data: dict):
+        url = f"{self.base_url}/{resource}/{item_id}/"
+        async with AsyncClient() as client:
+            response = await client.patch(url, json=data)
+        if response.status_code in (200, 204):
+            return response.json() if response.content else {}
+        else:
+            raise RequestError(message=response.text)
+
+    async def delete(self, resource: str, item_id: int) -> bool:
         url = f"{self.base_url}/{resource}/{item_id}/"
         async with AsyncClient() as client:
             response = await client.delete(url)
         if response.status_code == 204:
-            return {"detail": "Item deleted successfully"}
+            return True
         else:
             raise RequestError(message=response.text)

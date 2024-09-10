@@ -11,4 +11,6 @@ class TaskAdmin(admin.ModelAdmin):
     ordering = ['date_created']
 
     def telegram_user_chat_id(self, obj):
-        return obj.telegram_user.chat_id
+        if obj.telegram_user_id:
+            return obj.telegram_user.chat_id
+        return None

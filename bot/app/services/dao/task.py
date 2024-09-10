@@ -7,7 +7,10 @@ from app.services.dao.base import DAO
 
 class TaskDAO(DAO):
     async def get_task(self, id: int) -> Optional[Task]:
-        return await self.todo_core.get("tasks", item_id=id)
+        response = await self.todo_core.get("tasks", item_id=id)
+        if response:
+            return Task(**response)
+        return None
 
     async def get_tasks(
         self,
@@ -24,7 +27,8 @@ class TaskDAO(DAO):
         if tags_ids:
             params["tags_ids"] = ",".join(map(str, tags_ids))
 
-        return await self.todo_core.get("tasks", params=params)
+        response = await self.todo_core.get("tasks", params=params)
+        return [Task(**item) for item in response if response]
 
     async def create_task(
         self,
@@ -34,8 +38,11 @@ class TaskDAO(DAO):
         completed: bool,
         tags: Optional[List[int]] = None,
         remind_time: Optional[datetime] = None,
-    ) -> Task:
-        task = await self.todo_core.create(
+    ) -> Optional[Task]:
+        if tags is None:
+            tags = []
+
+        response = await self.todo_core.create(
             "tasks",
             data={
                 "telegram_user": telegram_user_id,
@@ -43,7 +50,10 @@ class TaskDAO(DAO):
                 "description": description,
                 "completed": completed,
                 "tags": tags,
-                "remind_time": remind_time
+                "remind_time": str(remind_time)
             }
         )
-        return task
+
+        if response:
+            return Task(**response)
+        return None

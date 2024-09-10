@@ -1,11 +1,7 @@
 from . import (
-    user,
-    stats,
-    show_mailing
+    user
 )
 
 __all__ = [
-    "stats",
     "user",
-    "show_mailing"
 ]

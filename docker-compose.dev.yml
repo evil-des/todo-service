@@ -25,6 +25,6 @@ services:
     ports:
       - "6379:6379"
 
-  # bot:
-  #   volumes:
-  #     - ./bot/:/src
+  bot:
+    volumes:
+      - ./bot/:/src

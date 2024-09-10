@@ -13,7 +13,6 @@ from aiohttp import web
 from redis.asyncio import Redis
 
 from app import dialogs, handlers, utils, web_handlers
-from app.database.engine import AsyncSession
 from app.middlewares import (  # UserObjectMiddleware,
     InternalServicesMiddleware,
     RepoMiddleware,
@@ -54,9 +53,6 @@ async def close_db_connections(dp: Dispatcher) -> None:
     if "temp_bot_local_session" in dp.workflow_data:
         temp_bot_local_session: AiohttpSession = dp["temp_bot_local_session"]
         await temp_bot_local_session.close()
-    if "session" in dp.workflow_data:
-        session: AsyncSession = dp["session"]
-        await session.close()
     if "cache" in dp.workflow_data:
         cache: Cache = dp["cache"]  # type: ignore[type-arg]
         await cache.REDIS.close()
@@ -64,11 +60,9 @@ async def close_db_connections(dp: Dispatcher) -> None:
 
 def register_dialogs(dp: Dispatcher):
     all_dialogs = [
-        dialogs.stats.dialog,
-        dialogs.show_mailing.dialog,
-        dialogs.user.menu.dialog,
         dialogs.user.start_message.dialog,
-        dialogs.user.choose_lang.dialog,
+        dialogs.user.tasks.dialog,
+        dialogs.user.choose_lang.dialog
     ]
     for dialog in all_dialogs:
         dp.include_router(dialog)
@@ -78,7 +72,6 @@ def register_dialogs(dp: Dispatcher):
 
 def setup_handlers(dp: Dispatcher) -> None:
     dp.include_router(handlers.user.prepare_router())
-    dp.include_router(handlers.mailing.router)
 
     register_dialogs(dp)
 
