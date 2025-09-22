@@ -5,3 +5,4 @@
 !.env.example
 !**/.env.example
 .env
+**/poetry.lock
