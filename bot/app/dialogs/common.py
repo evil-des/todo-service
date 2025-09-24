@@ -1,10 +1,12 @@
 from typing import List, Optional
 
+from aiogram.fsm.state import State
 from aiogram.types import CallbackQuery, Message
 from aiogram_dialog import DialogManager, Window
+from aiogram_dialog.api.internal import Widget
 from aiogram_dialog.widgets.input import ManagedTextInput, TextInput
-from aiogram_dialog.widgets.kbd import Back, Button, Cancel, Group, Next, Row
-from aiogram_dialog.widgets.text import Const, Text
+from aiogram_dialog.widgets.kbd import Back, Button, Cancel, Group, Next, Row, Multiselect, SwitchTo
+from aiogram_dialog.widgets.text import Const, Text, Format
 
 
 class CommonElements:
@@ -58,11 +60,45 @@ class CommonElements:
 
     @staticmethod
     def confirm_n_cancel(on_confirm_click, on_cancel_click) -> Row:
-        return Row(CommonElements.confirm_btn(on_confirm_click), CommonElements.cancel_btn(on_cancel_click))
+        return Row(
+            CommonElements.confirm_btn(on_confirm_click),
+            CommonElements.cancel_btn(on_cancel_click),
+        )
 
     @staticmethod
     def back_n_cancel() -> Row:
         return Row(CommonElements.back_btn(), CommonElements.cancel_btn())
+
+    @staticmethod
+    def multiselect_n_confirm(
+            title: str,
+            id: str,
+            item_id_getter,
+            items: str,
+            state: State,
+            switch_to: State,
+            confirm_btn_text: str = "Готово ✅",
+            elements: list[Widget] = None,
+    ) -> Window:
+        if elements is None:
+            elements = []
+        return Window(
+            Format(title),
+            Multiselect(
+                Format("✓ {item.name}"),
+                Format("{item.name}"),
+                id=id,
+                item_id_getter=item_id_getter,
+                items=items,
+            ),
+            SwitchTo(
+                Format(confirm_btn_text),
+                id=f"{id}_confirm",
+                state=switch_to,
+            ),
+            *elements,
+            state=state,
+        )
 
     @staticmethod
     def input(

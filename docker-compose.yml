@@ -48,7 +48,7 @@ services:
       - comments
 
   db:
-    image: postgres:13.8-bullseye
+    image: postgres:16.4-alpine3.20
     hostname: "db"
     env_file:
       - .env
@@ -62,7 +62,7 @@ services:
       retries: 40
 
   redis:
-    image: bitnami/redis:6.2.5
+    image: redis:7.2.2-alpine3.18
     hostname: "redis"
     restart: always
     environment:

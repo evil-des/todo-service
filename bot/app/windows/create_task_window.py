@@ -10,7 +10,7 @@ from app.dialogs.common import CommonElements
 from app.models import TelegramUser
 from app.services.internal import TODOCore
 from app.services.repo import Repo
-from app.states.user import TODOManage
+from app.states.task import TaskShowState
 
 
 class CreateTaskWindow(Window):
@@ -23,7 +23,10 @@ class CreateTaskWindow(Window):
 
     @staticmethod
     def get_approve_keyboard(on_confirm_click, on_cancel_click):
-        return CommonElements.confirm_n_cancel(on_confirm_click=on_confirm_click, on_cancel_click=on_cancel_click)
+        return CommonElements.confirm_n_cancel(
+            on_confirm_click=on_confirm_click,
+            on_cancel_click=on_cancel_click,
+        )
 
     @staticmethod
     async def create_task(
@@ -35,7 +38,9 @@ class CreateTaskWindow(Window):
         await callback.answer(locales["sending_request"])
 
         repo: Repo = dialog_manager.middleware_data["repo"]
-        user: TelegramUser = await repo.user_dao.get_user(dialog_manager.event.from_user.id)
+        user: TelegramUser = await repo.user_dao.get_user(
+            dialog_manager.event.from_user.id
+        )
 
         data = dialog_manager.dialog_data
 
@@ -48,13 +53,11 @@ class CreateTaskWindow(Window):
             title=data.get("title"),
             description=data.get("description"),
             completed=False,
-            remind_time=remind_time
+            remind_time=remind_time,
         )
         if status:
             await callback.answer(locales["tasks"]["add_task"]["success"])
-            await dialog_manager.start(
-                state=TODOManage.tasks
-            )
+            await dialog_manager.start(state=TaskShowState.tasks)
         else:
             await callback.answer(locales["tasks"]["add_task"]["fail"])
 

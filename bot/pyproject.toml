@@ -49,7 +49,6 @@ name = "app"
 version = "1.0.0"
 description = "Library database in Telegram"
 authors = ["evil-des"]
-readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.10"

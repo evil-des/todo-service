@@ -8,7 +8,7 @@ from aiogram_dialog.widgets.text import Const, Jinja, Format
 from app.dialogs.common import CommonElements
 from app.models import Task
 from app.services.repo import Repo
-from app.states.user import TODOManage
+from app.states.task import TODOManage, TaskShowState
 import datetime
 
 
@@ -39,7 +39,7 @@ class TaskInfoWindow(Window):
 
     @staticmethod
     async def on_back_click(call_back, button, dialog_manager: DialogManager, **kwargs):
-        await dialog_manager.switch_to(TODOManage.tasks)
+        await dialog_manager.switch_to(TaskShowState.tasks)
 
     def get_request_data(self):
         async def getter(dialog_manager: DialogManager, **kwargs) -> Dict:

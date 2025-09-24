@@ -60,9 +60,10 @@ async def close_db_connections(dp: Dispatcher) -> None:
 
 def register_dialogs(dp: Dispatcher):
     all_dialogs = [
-        dialogs.user.start_message.dialog,
-        dialogs.user.tasks.dialog,
-        dialogs.user.choose_lang.dialog
+        dialogs.user.start_message,
+        dialogs.user.choose_lang,
+        dialogs.tasks.show,
+        dialogs.tasks.add,
     ]
     for dialog in all_dialogs:
         dp.include_router(dialog)

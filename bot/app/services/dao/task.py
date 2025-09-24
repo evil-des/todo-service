@@ -50,7 +50,7 @@ class TaskDAO(DAO):
                 "description": description,
                 "completed": completed,
                 "tags": tags,
-                "remind_time": str(remind_time)
+                "remind_time": str(remind_time),
             }
         )
 

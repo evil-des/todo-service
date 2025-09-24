@@ -7,7 +7,7 @@ from aiogram_dialog.widgets.text import Const, Format
 from app.dialogs.common import CommonElements
 from app.services.internal import TODOCore
 from app.services.repo import Repo
-from app.states.user import TODOManage
+from app.states.task import TODOManage, TaskShowState
 
 
 class DeleteTaskWindow(Window):
@@ -20,7 +20,10 @@ class DeleteTaskWindow(Window):
 
     @staticmethod
     def get_approve_keyboard(on_confirm_click, on_cancel_click):
-        return CommonElements.confirm_n_cancel(on_confirm_click=on_confirm_click, on_cancel_click=on_cancel_click)
+        return CommonElements.confirm_n_cancel(
+            on_confirm_click=on_confirm_click,
+            on_cancel_click=on_cancel_click,
+        )
 
     @staticmethod
     async def delete_task(
@@ -39,7 +42,7 @@ class DeleteTaskWindow(Window):
         if status:
             await callback.answer(locales["tasks"]["delete_task"]["success"])
             await dialog_manager.start(
-                state=TODOManage.tasks
+                state=TaskShowState.tasks
             )
         else:
             await callback.answer(locales["tasks"]["delete_task"]["fail"])

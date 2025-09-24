@@ -15,7 +15,9 @@ locales = {
             "listing": "Выберите задачу для просмотра/редактирования, "
                        "либо добавьте новую:\n\n"
                        "✅ - выполнена\n❌ - не выполнена",
+            "listing_choose_tag": "Выберите тег для фильтрации, либо добавьте новый:",
             "add_item_btn": "➕ Добавить",
+            "reset_filters": "Сбросить фильтры",
             "add_task": {
                 "title": "Введите название задачи:",
                 "description": "Введите описание задачи:",
@@ -28,12 +30,18 @@ locales = {
                 "fail": "😵‍💫 Произошла ошибка при создании задачи",
                 "time_format": "Формат времени должен быть в виде ЧЧ:ММ (24ч. формат), например 10:30"
             },
+            "add_tag": {
+                "title": "Введите название тега:",
+                "success": "Тег успешно создан 👍",
+                "fail": "😵‍💫 Произошла ошибка при создании тега",
+            },
             "task_info": "Задача <code>ID: {id}</code>\n\n"
                          "➖➖➖➖➖➖➖➖➖➖\n"
                          "Название: <b>{title}</b>\n"
                          "Статус: {completed}\n"
                          "Дата создания: {date_created}\n"
                          "Уведомление придет: {remind_time}\n"
+                         # "Теги: {tags}\n"
                          "➖➖➖➖➖➖➖➖➖➖\n\n"
                          "Описание задачи:\n\n{description}",
             "delete_task": {
@@ -58,7 +66,9 @@ locales = {
         "tasks": {
             "listing": "Choose task for viewing/editing or add new:\n\n"
                        "✅ - completed\n❌ - not completed",
+            "listing_choose_tag": "Choose a tag to filter items or create one:",
             "add_item_btn": "➕ Add",
+            "reset_filters": "Reset filters",
             "add_task": {
                 "title": "Send name for the task:",
                 "description": "Send description for the task:",
@@ -77,6 +87,7 @@ locales = {
                          "Status: {completed}\n"
                          "Date of creation: {date_created}\n"
                          "Remind me at: {remind_time}\n"
+                         # "Tags: {tags}\n"
                          "➖➖➖➖➖➖➖➖➖➖\n\n"
                          "Task description:\n\n{description}",
             "delete_task": {

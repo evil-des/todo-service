@@ -5,7 +5,8 @@ from aiogram.types import CallbackQuery, ReplyKeyboardMarkup
 
 from app.services.repo import Repo
 from app.models.user import TelegramUser
-from app.states.user import ChooseLanguage, UserStart, TODOManage
+from app.states.user import ChooseLanguage, UserStart
+from app.states.task import TODOManage
 from app.data.locales import locales
 from app.handlers.user.start import show_start_message, show_user_menu
 from app.keyboards.menu import Menu

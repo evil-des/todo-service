@@ -7,7 +7,7 @@ from .user import TelegramUser
 
 class Tag(BaseModel):
     id: int
-    title: str
+    name: str
 
 
 class Task(BaseModel):
@@ -19,3 +19,7 @@ class Task(BaseModel):
     remind_time: datetime
     completed: bool
     date_created: datetime
+
+
+class TaskFilter(BaseModel):
+    BY_TAG: bool = False

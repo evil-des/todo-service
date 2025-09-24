@@ -1,7 +1,9 @@
 from . import (
-    user
+    user,
+    tasks,
 )
 
 __all__ = [
     "user",
+    "tasks",
 ]

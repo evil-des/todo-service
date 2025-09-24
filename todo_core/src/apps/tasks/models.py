@@ -15,7 +15,8 @@ class Task(models.Model):
     telegram_user = models.ForeignKey(
         TelegramUser,
         related_name="tasks",
-        blank=True, null=True,
-        on_delete=models.CASCADE
+        blank=True, 
+        null=True,
+        on_delete=models.CASCADE,
     )
     date_created = models.DateTimeField(auto_now_add=True)
