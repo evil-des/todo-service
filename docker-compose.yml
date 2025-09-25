@@ -23,7 +23,7 @@ services:
       context: ./todo_core
       dockerfile: Dockerfile
       target: prod
-    command: poetry run celery -A src.config.celery:app worker -l INFO
+    command: poetry run celery -A src.config.celery:app worker -Q default -l INFO
     image: todo-service-core
     depends_on:
       - todo-core
@@ -84,9 +84,12 @@ services:
     image: todo-service-bot
     env_file:
       - .env
+    working_dir: /src
+    environment:
+       PYTHONPATH: /src
     build:
       context: ./bot/
-    command: poetry run celery -A app.celery_app:app worker -Q notifications -l INFO
+    command: poetry run celery -A app.celery_app:celery_app worker -Q notifications -l INFO
     depends_on:
       - bot
       - redis

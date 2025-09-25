@@ -3,12 +3,14 @@ from app.utils.get_settings import get_settings
 
 settings = get_settings()
 
-app = Celery("bot")
-app.conf.update(
+celery_app = Celery("bot")
+celery_app.conf.update(
     broker_url=settings.CELERY_BROKER_URL,
     result_backend=settings.CELERY_RESULT_BACKEND,
     task_default_queue=settings.CELERY_QUEUE,
     timezone=settings.CELERY_TIMEZONE,
 )
 
-app.autodiscover_tasks(["app"])
+celery_app.autodiscover_tasks(["app"])
+
+import app.services.notifications.tasks  # noqa: F401

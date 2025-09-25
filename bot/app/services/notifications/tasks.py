@@ -21,7 +21,10 @@ def send_telegram(self, chat_id: str, text: str, task_id: int):
         task_dao = TaskDAO(todo_core, comments_crud)
 
         try:
-            await bot.send_message(chat_id=chat_id, text=text)
+            await bot.send_message(
+                chat_id=chat_id,
+                text=f"🗓️ Выполните задачу #{task_id} - {text}",
+            )
             await task_dao.mark_notified(
                 task_id,
                 datetime.datetime.now(),

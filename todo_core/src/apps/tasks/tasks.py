@@ -15,8 +15,8 @@ def enqueue_todos():
         with transaction.atomic():
             qs = (Task.objects
                   .select_for_update(skip_locked=True)
-                  .filter(notify_status__in=["pending", "failed"], remind_at__lte=window)
-                  .order_by("remind_at")[:batch_size])
+                  .filter(notify_status__in=["pending", "failed"], remind_time__lte=window)
+                  .order_by("remind_time")[:batch_size])
             items = list(qs)
             if not items:
                 break
@@ -27,7 +27,11 @@ def enqueue_todos():
 
                 current_app.send_task(
                     "send_telegram",
-                    kwargs={"chat_id": t.user_chat_id, "text": t.title, "task_id": t.id},
+                    kwargs={
+                        "chat_id": t.telegram_user.chat_id,
+                        "text": t.title,
+                        "task_id": t.id,
+                    },
                     queue="notifications",
                 )
 

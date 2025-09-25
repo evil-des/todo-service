@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 from datetime import timedelta
 import os
+from kombu import Queue
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -170,11 +171,22 @@ CELERY_RESULT_BACKEND = os.environ.get(
 )
 
 CELERY_TIMEZONE = os.environ.get(ENV_PREFIX + 'CELERY_TIMEZONE', 'America/Adak')
-CELERY_TASK_DEFAULT_QUEUE = "notifications"
+CELERY_TASK_DEFAULT_QUEUE = "default"
+
+CELERY_TASK_QUEUES = (
+    Queue("default"),
+    Queue("notifications"),
+)
+
+CELERY_TASK_ROUTES = {
+    "apps.tasks.tasks.enqueue_todos": {"queue": "default"},
+    "send_telegram": {"queue": "notifications"},
+}
 
 CELERY_BEAT_SCHEDULE = {
     "enqueue-todos": {
         "task": "apps.tasks.tasks.enqueue_todos",
         "schedule": timedelta(seconds=30),
+        "options": {"queue": "default"},
     }
 }
