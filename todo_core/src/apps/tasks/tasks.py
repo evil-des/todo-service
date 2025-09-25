@@ -23,7 +23,8 @@ def enqueue_todos():
 
             for t in items:
                 t.notify_status = "enqueued"
-                t.save(update_fields=["notify_status"])
+                t.notify_attempts += 1
+                t.save(update_fields=["notify_status", "notify_attempts"])
 
                 current_app.send_task(
                     "send_telegram",

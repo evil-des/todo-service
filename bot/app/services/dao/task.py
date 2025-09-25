@@ -64,7 +64,7 @@ class TaskDAO(DAO):
             task_id,
             data={
                 "notify_status": TaskNotifyStatusEnum.SENT.value,
-                "notified_at": notified_at,
+                "notified_at": str(notified_at),
             }
         )
         if response:
