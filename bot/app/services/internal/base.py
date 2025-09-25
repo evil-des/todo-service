@@ -27,10 +27,10 @@ class Base:
         else:
             raise RequestError(message=response.text)
 
-    async def update(self, resource: str, item_id: int, data: dict):
+    async def post(self, resource: str, item_id: int, data: dict):
         url = f"{self.base_url}/{resource}/{item_id}/"
         async with AsyncClient() as client:
-            response = await client.put(url, json=data)
+            response = await client.post(url, json=data)
         if response.status_code in (200, 204):
             return response.json() if response.content else {}
         else:

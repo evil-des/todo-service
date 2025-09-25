@@ -75,6 +75,7 @@ alembic = "^1.13.0"
 requests = "^2.31.0"
 pytelegrambotapi = "^4.17.0"
 httpx = "^0.27.2"
+celery = ">=5.3,<6"
 
 [tool.poetry.group.dev]
 optional = true

@@ -43,6 +43,11 @@ class DefaultSettings(BaseSettings):
     REDIS_CACHE_DB: int = Field(default=5)
     REDIS_STORAGE_DB: int = Field(default=3)
 
+    CELERY_BROKER_URL: str = Field(default="redis://redis:6379/1")
+    CELERY_RESULT_BACKEND: str = Field(default="redis://redis:6379/2")
+    CELERY_QUEUE: str = Field(default="notifications")
+    CELERY_TIMEZONE: str = Field(default="America/Adak")
+
     # REDIS_URI: Optional[RedisDsn] = None
 
     class Config:

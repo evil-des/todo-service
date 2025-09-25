@@ -18,6 +18,38 @@ services:
     networks:
       - default
 
+  todo-core_celery-worker:
+    build:
+      context: ./todo_core
+      dockerfile: Dockerfile
+      target: prod
+    command: poetry run celery -A src.config.celery:app worker -l INFO
+    image: todo-service-core
+    depends_on:
+      - todo-core
+      - redis
+    env_file:
+      - .env
+    environment:
+      DJANGO_SETTINGS_MODULE: src.config.settings
+      PYTHONPATH: /app/src
+
+  todo-core_celery-beat:
+    build:
+      context: ./todo_core
+      dockerfile: Dockerfile
+      target: prod
+    command: poetry run celery -A src.config.celery:app beat -l INFO
+    image: todo-service-core
+    depends_on:
+      - todo-core
+      - redis
+    env_file:
+      - .env
+    environment:
+      DJANGO_SETTINGS_MODULE: src.config.settings
+      PYTHONPATH: /app/src
+
   comments:
     build:
       context: ./comments
@@ -43,9 +75,21 @@ services:
       - .env
     build:
       context: ./bot/
+    command: poetry run python app/bot.py
     depends_on:
       - todo-core
       - comments
+
+  bot_celery-worker:
+    image: todo-service-bot
+    env_file:
+      - .env
+    build:
+      context: ./bot/
+    command: poetry run celery -A app.celery_app:app worker -Q notifications -l INFO
+    depends_on:
+      - bot
+      - redis
 
   db:
     image: postgres:16.4-alpine3.20

@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import List, Optional
 from aiogram import types
-from app.models import Task
+from app.models import Task, TaskNotifyStatusEnum
 from app.services.dao.base import DAO
 
 
@@ -51,9 +51,22 @@ class TaskDAO(DAO):
                 "completed": completed,
                 "tags": tags,
                 "remind_time": str(remind_time),
-            }
+            },
         )
 
         if response:
             return Task(**response)
         return None
+
+    async def mark_notified(self, task_id: int, notified_at: datetime) -> bool:
+        response = await self.todo_core.patch(
+            "tasks",
+            task_id,
+            data={
+                "notify_status": TaskNotifyStatusEnum.SENT.value,
+                "notified_at": notified_at,
+            }
+        )
+        if response:
+            return True
+        return False

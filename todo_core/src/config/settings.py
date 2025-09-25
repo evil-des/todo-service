@@ -161,7 +161,7 @@ SIMPLE_JWT = {
 
 # Celery settings
 CELERY_BROKER_URL = os.environ.get(
-    ENV_PREFIX + 'CELERY_TIMEZONE',
+    ENV_PREFIX + 'CELERY_BROKER_URL',
     'redis://redis:6379/1',
 )
 CELERY_RESULT_BACKEND = os.environ.get(
@@ -174,8 +174,7 @@ CELERY_TASK_DEFAULT_QUEUE = "notifications"
 
 CELERY_BEAT_SCHEDULE = {
     "enqueue-todos": {
-        "task": "tasks.enqueue_todos",
+        "task": "apps.tasks.tasks.enqueue_todos",
         "schedule": timedelta(seconds=30),
     }
 }
-
