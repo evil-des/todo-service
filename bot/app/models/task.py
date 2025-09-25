@@ -23,7 +23,7 @@ class Task(BaseModel):
     telegram_user: Optional[int] = None
     tags: Optional[List[int]] = []
     title: str
-    description: str
+    description: Optional[str] = None
     remind_time: datetime
     notify_status: TaskNotifyStatusEnum = TaskNotifyStatusEnum.PENDING
     notify_attempts: int = 0

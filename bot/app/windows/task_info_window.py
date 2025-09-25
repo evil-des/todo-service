@@ -53,10 +53,10 @@ class TaskInfoWindow(Window):
                 "task_text": locale.format(
                     id=task.id,
                     title=task.title,
-                    description=task.description,
+                    description=task.description or '<i>не указано</i>',
                     completed='✅ выполнена' if task.completed else '❌ не выполнена',
                     date_created=task.date_created.strftime("%d.%m.%Y"),
-                    remind_time=task.date_created.strftime("%d.%m.%Y %H:%M"),
+                    remind_time=task.remind_time.strftime("%d.%m.%Y %H:%M"),
                 )
             }
 
